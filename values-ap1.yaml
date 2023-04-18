@@ -1,0 +1,33 @@
+global:
+  name: consul
+  image: k3d-registry.localhost:5001/consul-dev
+  peering:
+    enabled: true
+  tls:
+    enabled: true
+  ui:
+    enabled: true
+  enterpriseLicense:
+    secretName: license
+    secretKey: license.txt
+    enableLicenseAutoload: true
+  enableConsulNamespaces: true
+  adminPartitions:
+    enabled: true
+    name: "ap1"
+externalServers:
+  enabled: true
+  tlsServerName: server.dc1.consul
+connectInject:
+  enabled: true
+  default: true
+  transparentProxy:
+    defaultEnabled: false
+meshGateway:
+  enabled: true
+# Everything below is for k3d
+  service:
+    type: "NodePort"
+    nodePort: "30101"
+server:
+  enabled: false

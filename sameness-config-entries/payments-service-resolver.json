@@ -1,0 +1,9 @@
+{
+  "Kind": "service-resolver",
+  "Name": "static-server",
+  "Failover": {
+    "*": {
+      "SamenessGroup": "mine"
+    }
+  }
+}

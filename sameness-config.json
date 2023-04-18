@@ -1,0 +1,15 @@
+{
+  "name": "mine",
+  "default_for_failover": false,
+  "datacenters": [
+    {"name": "dc1", "url": "https://localhost:8501"},
+    {"name": "dc2", "url": "https://localhost:8502"},
+    {"name": "dc3", "url": "https://localhost:8503"}
+  ],
+  "members": [
+    {"datacenter": "dc1", "partition": "default", "peer": "cluster-01-a"},
+    {"datacenter": "dc1", "partition": "ap1", "peer": "cluster-01-b"},
+    {"datacenter": "dc2", "partition": "default", "peer": "cluster-02-a"},
+    {"datacenter": "dc3", "partition": "default", "peer": "cluster-03-a"}
+  ]
+}

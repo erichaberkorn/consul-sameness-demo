@@ -1,0 +1,9 @@
+{
+  "Kind": "exported-services",
+  "Services": [
+    {
+      "Name": "static-server",
+      "Consumers": [{"SamenessGroup": "mine"}]
+    }
+  ]
+}
