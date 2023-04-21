@@ -32,11 +32,31 @@ while [ -z "$HOST" ]; do
   [ -z "$HOST" ] && sleep 1
 done
 
+echo "$HOST"
+
+export AUTH_METHOD_URL=""
+while [ -z "$AUTH_METHOD_URL" ]; do
+  AUTH_METHOD_URL=$(kubectl get endpoints kubernetes --context k3d-c2 -o jsonpath='https://{.subsets[0].addresses[0].ip}:{.subsets[0].ports[0].port}')
+  [ -z "$AUTH_METHOD_URL" ] && sleep 1
+done
+
+echo "$AUTH_METHOD_URL"
+
+export BOOTSTRAP=""
+while [ -z "$BOOTSTRAP" ]; do
+  BOOTSTRAP=$(kubectl get secret consul-partitions-acl-token --context $CLUSTER1_CONTEXT -n consul -o yaml)
+  [ -z "$BOOTSTRAP" ] && sleep 1
+done
+
+echo "$BOOTSTRAP"
+
+echo "$BOOTSTRAP" | kubectl apply -n consul --context $CLUSTER2_CONTEXT --filename -
+
 kubectl get secret --context $CLUSTER1_CONTEXT --namespace consul consul-ca-cert -o yaml | kubectl --context $CLUSTER2_CONTEXT apply --namespace consul -f -
 kubectl get secret --context $CLUSTER1_CONTEXT --namespace consul consul-ca-key -o yaml | kubectl --context $CLUSTER2_CONTEXT apply --namespace consul -f -
 
 export HELM_RELEASE_NAME=cluster-01-ap1
-helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.0" --values values-ap1.yaml --set global.datacenter=dc1 --set "externalServers.hosts[0]=$HOST" --kube-context $CLUSTER2_CONTEXT
+helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.0" --values values-ap1.yaml --set global.datacenter=dc1 --set "externalServers.hosts[0]=$HOST" --set "externalServers.k8sAuthMethodHost=$AUTH_METHOD_URL" --kube-context $CLUSTER2_CONTEXT
 
 export HELM_RELEASE_NAME=cluster-02
 helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.0" --values values-ent.yaml --set global.datacenter=dc2 --kube-context $CLUSTER3_CONTEXT

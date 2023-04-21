@@ -15,6 +15,11 @@ global:
   adminPartitions:
     enabled: true
     name: "ap1"
+  acls:
+    manageSystemACLs: true
+    bootstrapToken:
+      secretName: consul-partitions-acl-token
+      secretKey: token
 externalServers:
   enabled: true
   tlsServerName: server.dc1.consul

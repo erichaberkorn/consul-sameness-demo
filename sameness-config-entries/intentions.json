@@ -1,0 +1,11 @@
+{
+  "Kind": "service-intentions",
+  "Name": "static-server",
+  "Sources": [
+    {
+      "Name": "static-client",
+      "SamenessGroup": "mine",
+      "Action": "allow"
+    }
+  ]
+}
