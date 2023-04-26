@@ -16,7 +16,7 @@ kubectl --context $CLUSTER3_CONTEXT -n consul create secret generic license --fr
 kubectl --context $CLUSTER4_CONTEXT -n consul create secret generic license --from-file=license.txt
 
 export HELM_RELEASE_NAME=cluster-01
-helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.0" --values values-ent.yaml --set global.datacenter=dc1 --kube-context $CLUSTER1_CONTEXT
+helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc1 --kube-context $CLUSTER1_CONTEXT
 
 while ! kubectl get secret --context $CLUSTER1_CONTEXT --namespace consul consul-ca-cert -o yaml >/dev/null 2>&1; do
   sleep 1
@@ -56,10 +56,10 @@ kubectl get secret --context $CLUSTER1_CONTEXT --namespace consul consul-ca-cert
 kubectl get secret --context $CLUSTER1_CONTEXT --namespace consul consul-ca-key -o yaml | kubectl --context $CLUSTER2_CONTEXT apply --namespace consul -f -
 
 export HELM_RELEASE_NAME=cluster-01-ap1
-helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.0" --values values-ap1.yaml --set global.datacenter=dc1 --set "externalServers.hosts[0]=$HOST" --set "externalServers.k8sAuthMethodHost=$AUTH_METHOD_URL" --kube-context $CLUSTER2_CONTEXT
+helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.1" --values values-ap1.yaml --set global.datacenter=dc1 --set "externalServers.hosts[0]=$HOST" --set "externalServers.k8sAuthMethodHost=$AUTH_METHOD_URL" --kube-context $CLUSTER2_CONTEXT
 
 export HELM_RELEASE_NAME=cluster-02
-helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.0" --values values-ent.yaml --set global.datacenter=dc2 --kube-context $CLUSTER3_CONTEXT
+helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc2 --kube-context $CLUSTER3_CONTEXT
 
 export HELM_RELEASE_NAME=cluster-03
-helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.0" --values values-ent.yaml --set global.datacenter=dc2 --kube-context $CLUSTER4_CONTEXT
+helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc2 --kube-context $CLUSTER4_CONTEXT

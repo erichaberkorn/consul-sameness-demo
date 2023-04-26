@@ -4,6 +4,10 @@
     {
       "Name": "static-server",
       "Consumers": [{"SamenessGroup": "mine"}]
+    },
+    {
+      "Name": "mesh-gateway",
+      "Consumers": [{"SamenessGroup": "mine"}]
     }
   ]
 }

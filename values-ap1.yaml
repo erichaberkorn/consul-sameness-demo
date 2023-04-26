@@ -5,6 +5,12 @@ global:
     enabled: true
   tls:
     enabled: true
+    caCert:
+      secretName: consul-ca-cert
+      secretKey: tls.crt
+    caKey:
+      secretName: consul-ca-key
+      secretKey: tls.key
   ui:
     enabled: true
   enterpriseLicense:
@@ -26,8 +32,6 @@ externalServers:
 connectInject:
   enabled: true
   default: true
-  transparentProxy:
-    defaultEnabled: false
 meshGateway:
   enabled: true
 # Everything below is for k3d

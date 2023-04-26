@@ -20,13 +20,23 @@ global:
 connectInject:
   enabled: true
   default: true
-  transparentProxy:
-    defaultEnabled: false
 meshGateway:
   enabled: true
 # Everything below is for k3d
   service:
     type: "NodePort"
     nodePort: "30100"
+server:
+  resources:
+    requests:
+      memory: '100Mi'
+      cpu: '100m'
+    limits:
+      memory: '200Mi'
+      cpu: '200m'
+  extraConfig: |
+    {
+      "log_level": "TRACE"
+    }
 #server:
 #  exposeGossipAndRPCPorts: "true"

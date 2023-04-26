@@ -11,4 +11,4 @@ export C4_TOKEN=$(kubectl get secrets --context $CLUSTER4_CONTEXT -n consul cons
 
 envsubst < ./sameness-config-template.json > ./sameness-config.json
 
-consul-sameness-manager run -config-dir ./sameness-config-entries -members-config ./sameness-config.json
+./consul-sameness-manager run -config-dir ./sameness-config-entries -members-config ./sameness-config.json
