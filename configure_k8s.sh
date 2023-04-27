@@ -1,5 +1,6 @@
 set -e
 
+# is this redundant?
 export CLUSTER1_CONTEXT=k3d-c1
 export CLUSTER2_CONTEXT=k3d-c2
 export CLUSTER3_CONTEXT=k3d-c3

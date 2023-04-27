@@ -6,10 +6,14 @@
 
 ## Setup Steps
 
-1. `./reset-clusters.sh` - This deletes and creates four `k3d` Kubernetes clusters.
-2. `./install-consul.sh` - This installs Consul on each of the four Kubernetes created in the previous step.
-3. `./configure_k8s.sh` - Runs the `static-client` and `static-server` services on each Kubernetes cluster. `static-server` returns the peer name for the given partition.
-4. `./sameness-sync.sh` - Syncronizes configuration entires to each member of the sameness group.
+1. Make sure all variables are set correct in the `makefile`
+2. Install K3d
+3. `make setup` - This creates the k3d registry, builds/pushes the Consul/Consul-K8s images and sets up the value-*.yaml files
+4. `make install`
+   - Deletes and creates four k3d Kubernetes clusters.
+   - Installs Consul on each of the four Kubernetes created in the previous step.
+   - Runs the static-client and static-server services on each Kubernetes cluster. static-server returns the peer name for the given partition.
+   - Synchronizes configuration entries to each member of the sameness group.
 
 ## Testing
 
@@ -21,6 +25,6 @@ Run the following commands to verify this:
 2. `./scale.sh 1 0` to trigger a failover.
 3. `./make_request.sh` - Returns `cluster-01-b`
 4. `./scale.sh 2 0` to trigger a failover.
-3. `./make_request.sh` - Returns `cluster-03`
-4. `./scale.sh 4 0` to trigger a failover.
-3. `./make_request.sh` - Returns `cluster-02`
+5. `./make_request.sh` - Returns `cluster-03`
+6. `./scale.sh 4 0` to trigger a failover.
+7. `./make_request.sh` - Returns `cluster-02`

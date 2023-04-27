@@ -1,8 +1,10 @@
+#!/bin/bash
+
 set -e
 
 eval $(cat .env)
 
-export CHART_PATH=~/dev/consul-k8s/charts/consul/
+export CHART_PATH=$1
 
 CLUSTER_CONTEXTS=("$CLUSTER1_CONTEXT" "$CLUSTER2_CONTEXT" "$CLUSTER3_CONTEXT" "$CLUSTER4_CONTEXT")
 
