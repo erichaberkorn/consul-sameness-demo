@@ -1,65 +1,79 @@
 set -e
 
+eval $(cat namespaces.sh)
+
+export CHART_PATH=~/dev/consul-k8s/charts/consul/
 export CLUSTER1_CONTEXT=k3d-c1
 export CLUSTER2_CONTEXT=k3d-c2
 export CLUSTER3_CONTEXT=k3d-c3
 export CLUSTER4_CONTEXT=k3d-c4
 
-kubectl --context $CLUSTER1_CONTEXT create namespace consul
-kubectl --context $CLUSTER2_CONTEXT create namespace consul
-kubectl --context $CLUSTER3_CONTEXT create namespace consul
-kubectl --context $CLUSTER4_CONTEXT create namespace consul
+CLUSTER_CONTEXTS=("$CLUSTER1_CONTEXT" "$CLUSTER2_CONTEXT" "$CLUSTER3_CONTEXT" "$CLUSTER4_CONTEXT")
 
-kubectl --context $CLUSTER1_CONTEXT -n consul create secret generic license --from-file=license.txt
-kubectl --context $CLUSTER2_CONTEXT -n consul create secret generic license --from-file=license.txt
-kubectl --context $CLUSTER3_CONTEXT -n consul create secret generic license --from-file=license.txt
-kubectl --context $CLUSTER4_CONTEXT -n consul create secret generic license --from-file=license.txt
+create_namespace() {
+  local cluster_context="$1"
+  local namespace="$2"
+  kubectl --context $cluster_context create namespace $namespace
+}
 
-export HELM_RELEASE_NAME=cluster-01
-helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc1 --kube-context $CLUSTER1_CONTEXT
+create_secret() {
+  local cluster_context="$1"
+  local namespace="$2"
+  local secret_name="$3"
+  local file="$4"
+  kubectl --context $cluster_context -n $namespace create secret generic $secret_name --from-file=$file
+}
 
-while ! kubectl get secret --context $CLUSTER1_CONTEXT --namespace consul consul-ca-cert -o yaml >/dev/null 2>&1; do
-  sleep 1
+for cluster_context in "${CLUSTER_CONTEXTS[@]}"; do
+  create_namespace "$cluster_context" "$CONSUL_NS"
+  create_namespace "$cluster_context" "$SERVER_NS"
+  create_namespace "$cluster_context" "$CLIENT_NS"
+  create_secret $cluster_context "consul" "license" "license.txt"
 done
 
-while ! kubectl get secret --context $CLUSTER1_CONTEXT --namespace consul consul-ca-key -o yaml >/dev/null 2>&1; do
-  sleep 1
+export HELM_RELEASE_NAME=cluster-01
+helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc1 --kube-context $CLUSTER1_CONTEXT
+
+export C1_CA_CERT=""
+while [ -z "$C1_CA_CERT" ]; do
+  C1_CA_CERT=$(kubectl get secret --context $CLUSTER1_CONTEXT --namespace "$CONSUL_NS" consul-ca-cert -o yaml)
+  [ -z "$C1_CA_CERT" ] && sleep 1
+done
+
+export C1_CA_KEY=""
+while [ -z "$C1_CA_KEY" ]; do
+  C1_CA_KEY=$(kubectl get secret --context $CLUSTER1_CONTEXT --namespace "$CONSUL_NS" consul-ca-key -o yaml)
+  [ -z "$C1_CA_KEY" ] && sleep 1
 done
 
 export HOST=""
 while [ -z "$HOST" ]; do
-  HOST=$(kubectl get svc --context $CLUSTER1_CONTEXT -n consul consul-expose-servers -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>&1)
+  HOST=$(kubectl get svc --context $CLUSTER1_CONTEXT -n "$CONSUL_NS" consul-expose-servers -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>&1)
   [ -z "$HOST" ] && sleep 1
 done
 
-echo "$HOST"
-
 export AUTH_METHOD_URL=""
 while [ -z "$AUTH_METHOD_URL" ]; do
-  AUTH_METHOD_URL=$(kubectl get endpoints kubernetes --context k3d-c2 -o jsonpath='https://{.subsets[0].addresses[0].ip}:{.subsets[0].ports[0].port}')
+  AUTH_METHOD_URL=$(kubectl get endpoints kubernetes --context $CLUSTER2_CONTEXT -o jsonpath='https://{.subsets[0].addresses[0].ip}:{.subsets[0].ports[0].port}')
   [ -z "$AUTH_METHOD_URL" ] && sleep 1
 done
 
-echo "$AUTH_METHOD_URL"
-
 export BOOTSTRAP=""
 while [ -z "$BOOTSTRAP" ]; do
-  BOOTSTRAP=$(kubectl get secret consul-partitions-acl-token --context $CLUSTER1_CONTEXT -n consul -o yaml)
+  BOOTSTRAP=$(kubectl get secret consul-partitions-acl-token --context $CLUSTER1_CONTEXT -n "$CONSUL_NS" -o yaml)
   [ -z "$BOOTSTRAP" ] && sleep 1
 done
 
-echo "$BOOTSTRAP"
+echo "$BOOTSTRAP" | kubectl apply -n "$CONSUL_NS" --context $CLUSTER2_CONTEXT --filename -
 
-echo "$BOOTSTRAP" | kubectl apply -n consul --context $CLUSTER2_CONTEXT --filename -
-
-kubectl get secret --context $CLUSTER1_CONTEXT --namespace consul consul-ca-cert -o yaml | kubectl --context $CLUSTER2_CONTEXT apply --namespace consul -f -
-kubectl get secret --context $CLUSTER1_CONTEXT --namespace consul consul-ca-key -o yaml | kubectl --context $CLUSTER2_CONTEXT apply --namespace consul -f -
+echo "$C1_CA_CERT" | kubectl --context $CLUSTER2_CONTEXT apply --namespace "$CONSUL_NS" -f -
+echo "$C1_CA_KEY" | kubectl --context $CLUSTER2_CONTEXT apply --namespace "$CONSUL_NS" -f -
 
 export HELM_RELEASE_NAME=cluster-01-ap1
-helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.1" --values values-ap1.yaml --set global.datacenter=dc1 --set "externalServers.hosts[0]=$HOST" --set "externalServers.k8sAuthMethodHost=$AUTH_METHOD_URL" --kube-context $CLUSTER2_CONTEXT
+helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ap1.yaml --set global.datacenter=dc1 --set "externalServers.hosts[0]=$HOST" --set "externalServers.k8sAuthMethodHost=$AUTH_METHOD_URL" --kube-context $CLUSTER2_CONTEXT
 
 export HELM_RELEASE_NAME=cluster-02
-helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc2 --kube-context $CLUSTER3_CONTEXT
+helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc2 --kube-context $CLUSTER3_CONTEXT
 
 export HELM_RELEASE_NAME=cluster-03
-helm install ${HELM_RELEASE_NAME} hashicorp/consul --create-namespace --namespace consul --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc2 --kube-context $CLUSTER4_CONTEXT
+helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc2 --kube-context $CLUSTER4_CONTEXT

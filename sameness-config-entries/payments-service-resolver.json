@@ -1,9 +1,16 @@
 {
   "Kind": "service-resolver",
   "Name": "static-server",
+  "Namespace": "$SERVER_NS",
   "Failover": {
     "*": {
-      "SamenessGroup": "mine"
+      "SamenessGroup": "mine",
+      "Policy": {
+        "Mode": "order-by-locality",
+        "Regions": [
+          "us-west-2"
+        ]
+      }
     }
   }
 }

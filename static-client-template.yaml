@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  # This name will be the service name in Consul.
   name: static-client
+  namespace: $CLIENT_NS
 spec:
   selector:
     app: static-client
@@ -13,11 +13,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: static-client
+  namespace: $CLIENT_NS
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: static-client
+  namespace: $CLIENT_NS
 spec:
   replicas: 1
   selector:
@@ -30,7 +32,7 @@ spec:
         app: static-client
       annotations:
         'consul.hashicorp.com/connect-inject': 'true'
-        consul.hashicorp.com/connect-service-upstreams: "static-server:8080"
+        consul.hashicorp.com/connect-service-upstreams: "static-server.$SERVER_NS.$PARTITION:8080"
     spec:
       containers:
         - name: static-client

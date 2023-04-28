@@ -32,3 +32,7 @@ docker network connect k3d-c4 k3d-c2-server-0
 
 docker network connect k3d-c3 k3d-c4-server-0
 docker network connect k3d-c4 k3d-c3-server-0
+
+kubectl --context k3d-c1 label node k3d-c1-server-0 topology.kubernetes.io/region="us-east-1"
+kubectl --context k3d-c3 label node k3d-c3-server-0 topology.kubernetes.io/region="us-east-2"
+kubectl --context k3d-c4 label node k3d-c4-server-0 topology.kubernetes.io/region="us-west-2"

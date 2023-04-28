@@ -16,7 +16,7 @@
 
 ## Sameness Syncer
 
-The POC `consul-sameness-manager` takes a configuration file and a folder of Consul configuration entries. 
+The POC `consul-sameness-manager` takes a configuration file and a folder of Consul configuration entries.
 The configuration file looks like the following:
 
 ```json
@@ -37,7 +37,7 @@ The configuration file looks like the following:
 }
 ```
 
-Based on this configuration file, it automatically stores configuration entries 
+Based on this configuration file, it automatically stores configuration entries
 to each partition and configures cluster peering for between remote partitions.
 
 ## Testing
@@ -46,11 +46,10 @@ After runing the setup steps, the following tests making requests from `static-c
 `static-server` is configured to failover to sameness group members in the following order: `cluster-01-a`, `cluster-01-b`, `cluster-02` and finally `cluster-03`.
 
 Run the following commands to verify this:
-1. `kubectl exec -it --context k3d-c1 deploy/static-client -- curl localhost:8080` - Returns `cluster-01-a`
-2. `kubectl scale --context k3d-c1 --replicas=0 deploy/static-server` to trigger a failover.
-3. `kubectl exec -it --context k3d-c1 deploy/static-client -- curl localhost:8080` - Returns `cluster-01-b`
-4. `kubectl scale --context k3d-c2 --replicas=0 deploy/static-server` to trigger a failover.
-3. `kubectl exec -it --context k3d-c1 deploy/static-client -- curl localhost:8080` - Returns `cluster-02`
-4. `kubectl scale --context k3d-c3 --replicas=0 deploy/static-server` to trigger a failover.
-3. `kubectl exec -it --context k3d-c1 deploy/static-client -- curl localhost:8080` - Returns `cluster-03`
-
+1. `./make_request.sh` - Returns `cluster-01-a`
+2. `./scale.sh 1 0` to trigger a failover.
+3. `./make_request.sh` - Returns `cluster-01-b`
+4. `./scale.sh 2 0` to trigger a failover.
+3. `./make_request.sh` - Returns `cluster-03`
+4. `./scale.sh 4 0` to trigger a failover.
+3. `./make_request.sh` - Returns `cluster-02`

@@ -1,9 +1,11 @@
 {
   "Kind": "service-intentions",
   "Name": "static-server",
+  "Namespace": "$SERVER_NS",
   "Sources": [
     {
       "Name": "static-client",
+      "Namespace": "$CLIENT_NS",
       "SamenessGroup": "mine",
       "Action": "allow"
     }

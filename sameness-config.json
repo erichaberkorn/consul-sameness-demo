@@ -2,9 +2,9 @@
   "name": "mine",
   "default_for_failover": false,
   "datacenters": [
-    {"name": "dc1", "url": "https://localhost:8501", "ACLToken": "d9c7979b-acf3-ef22-a045-03e981e24976"},
-    {"name": "dc2", "url": "https://localhost:8502", "ACLToken": "9b4584e5-f8d7-0fdc-da76-4a7d17461c4c"},
-    {"name": "dc3", "url": "https://localhost:8503", "ACLToken": "99c87bab-8a03-a476-6d0d-d46eaf053597"}
+    {"name": "dc1", "url": "https://localhost:8501", "ACLToken": "046c375b-8481-188a-587c-10cf4ea2f1e7"},
+    {"name": "dc2", "url": "https://localhost:8502", "ACLToken": "f13d67df-0737-0d20-6900-d2e34f7b6482"},
+    {"name": "dc3", "url": "https://localhost:8503", "ACLToken": "e059434b-8025-0c65-cdd0-4e3f54115da0"}
   ],
   "members": [
     {"datacenter": "dc1", "partition": "default", "peer": "cluster-01-a"},

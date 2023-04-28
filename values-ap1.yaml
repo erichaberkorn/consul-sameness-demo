@@ -1,6 +1,7 @@
 global:
   name: consul
   image: k3d-registry.localhost:5001/consul-dev
+  imageK8S: k3d-registry.localhost:5001/consul-control-plane-dev
   peering:
     enabled: true
   tls:
@@ -32,6 +33,8 @@ externalServers:
 connectInject:
   enabled: true
   default: true
+  consulNamespaces:
+    mirroringK8S: true
 meshGateway:
   enabled: true
 # Everything below is for k3d

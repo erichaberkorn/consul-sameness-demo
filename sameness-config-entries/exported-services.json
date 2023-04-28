@@ -3,6 +3,7 @@
   "Services": [
     {
       "Name": "static-server",
+      "Namespace": "$SERVER_NS",
       "Consumers": [{"SamenessGroup": "mine"}]
     },
     {
