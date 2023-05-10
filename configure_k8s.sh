@@ -5,7 +5,7 @@ export CLUSTER2_CONTEXT=k3d-c2
 export CLUSTER3_CONTEXT=k3d-c3
 export CLUSTER4_CONTEXT=k3d-c4
 
-eval $(cat namespaces.sh)
+eval $(cat .env)
 
 apply_templates() {
   local cluster_context="$1"

@@ -1,0 +1,13 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ExportedServices
+metadata:
+  name: "$PARTITION"
+spec:
+  services:
+    - name: static-server
+      namespace: "$SERVER_NS"
+      consumers:
+        - samenessGroup: mine
+    - name: mesh-gateway
+      consumers:
+        - samenessGroup: mine

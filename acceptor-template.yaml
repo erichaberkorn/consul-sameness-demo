@@ -1,0 +1,10 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: PeeringAcceptor
+metadata:
+  name: $DIALER
+spec:
+  peer:
+    secret:
+      name: "$DIALER-peering-token"
+      key: "data"
+      backend: "kubernetes"

@@ -1,12 +1,8 @@
 set -e
 
-eval $(cat namespaces.sh)
+eval $(cat .env)
 
 export CHART_PATH=~/dev/consul-k8s/charts/consul/
-export CLUSTER1_CONTEXT=k3d-c1
-export CLUSTER2_CONTEXT=k3d-c2
-export CLUSTER3_CONTEXT=k3d-c3
-export CLUSTER4_CONTEXT=k3d-c4
 
 CLUSTER_CONTEXTS=("$CLUSTER1_CONTEXT" "$CLUSTER2_CONTEXT" "$CLUSTER3_CONTEXT" "$CLUSTER4_CONTEXT")
 
@@ -76,4 +72,4 @@ export HELM_RELEASE_NAME=cluster-02
 helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc2 --kube-context $CLUSTER3_CONTEXT
 
 export HELM_RELEASE_NAME=cluster-03
-helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc2 --kube-context $CLUSTER4_CONTEXT
+helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc3 --kube-context $CLUSTER4_CONTEXT

@@ -1,0 +1,13 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: static-server
+  namespace: "$SERVER_NS"
+spec:
+  destination:
+    name: static-server
+  sources:
+    - name: static-client
+      namespace: "$CLIENT_NS"
+      samenessGroup: mine
+      action: allow

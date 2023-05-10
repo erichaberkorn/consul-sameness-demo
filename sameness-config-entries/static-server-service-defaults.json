@@ -1,6 +1,0 @@
-{
-  "Kind": "service-defaults",
-  "Name": "static-server",
-  "Namespace": "$SERVER_NS",
-  "Protocol": "http"
-}
