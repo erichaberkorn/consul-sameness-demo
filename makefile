@@ -1,7 +1,6 @@
 CHART_DIR = ~/dev/consul-k8s/charts/consul
 #CHART_DIR = hashicorp/consul
 REGISTRY_PORT = 5001
-CLUSTER_PORT = 5001
 CONSUL_DIR = ~/dev/consul-enterprise
 CONSUL_K8S_DIR = ~/dev/consul-k8s
 
@@ -22,7 +21,7 @@ setup: registry image
 
 # install will reset all the clusters and install Consul/perform all the necessary sameness setup
 install:
-	./reset-clusters.sh $(CLUSTER_PORT); \
+	./reset-clusters.sh $(REGISTRY_PORT); \
  	./install-consul.sh $(CHART_DIR); \
  	./configure_k8s.sh; \
  	./sameness-sync.sh; \
