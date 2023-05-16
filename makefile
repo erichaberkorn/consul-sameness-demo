@@ -1,12 +1,15 @@
-CHART_DIR = ~/dev/consul-k8s/charts/consul
+CHART_DIR=~/dev/consul-k8s/charts/consul
 #CHART_DIR = hashicorp/consul
-REGISTRY_PORT = 5001
-CONSUL_DIR = ~/dev/consul-enterprise
-CONSUL_K8S_DIR = ~/dev/consul-k8s
+REGISTRY_PORT=5002
+#REGISTRY_PATH=localhost:5002
+REGISTRY_PATH=k3d-registry.localhost:5002
+CONSUL_DIR=~/dev/consul-enterprise
+CONSUL_K8S_DIR=~/dev/consul-k8s
+
 
 # image builds and pushes the Consul and Consul-K8s images to the registry. It also updates the helm value files with the correct image SHAs
 image:
-	@cd image-create; ./build-and-push-enterprise.sh $(REGISTRY_PORT) $(CONSUL_DIR) $(CONSUL_K8S_DIR)
+	@cd image-create; ./build-and-push-enterprise.sh $(REGISTRY_PATH) $(CONSUL_DIR) $(CONSUL_K8S_DIR)
 
 # registry creates the k3d registry
 registry:

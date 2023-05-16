@@ -1,7 +1,7 @@
 global:
   name: consul
-  image: "k3d-registry.localhost:5001/consul-dev@sha256:7e559657a6ec7e77e278e5f092bd80e821fac9e4a05b5d504fc32ff8f3ce0474"
-  imageK8S: "k3d-registry.localhost:5001/consul-k8s-control-plane-dev@sha256:e5e61d37756f4e23acbc3d8e4394a6cd8ab93612d0c14a45b0f9607a87b18080"
+  image: "k3d-registry.localhost:5002/consul-dev@sha256:27708036dc0496562b1f9af487f418a5685dc63540eca34f25843b6f7ae69512"
+  imageK8S: "k3d-registry.localhost:5002/consul-k8s-control-plane-dev@sha256:0dfce57eee7006709c2e689a39694474b1bb0cfee9a9c9f84aa8b6f2ef9fb029"
   peering:
     enabled: true
   tls:

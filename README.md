@@ -15,6 +15,13 @@
    - Runs the static-client and static-server services on each Kubernetes cluster. static-server returns the peer name for the given partition.
    - Synchronizes configuration entries to each member of the sameness group.
 
+## Common Issues
+1. If the image is having issues pushing to the K3d registry, make sure that registry is added to your host file `/etc/host`
+   example content. 
+   ```shell
+   127.0.0.1 k3d-registry.localhost
+   ```
+
 ## Testing
 
 After runing the setup steps, the following tests making requests from `static-client` in `cluster-01-a` `static-server`.
