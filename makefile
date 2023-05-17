@@ -36,7 +36,10 @@ uninstall:
     k3d cluster delete c3; \
     k3d cluster delete c4; \
 
+get-bootstrap-token:
+	kubectl get secret --context k3d-c1 --namespace consul consul-bootstrap-acl-token -o yaml
+
 # teardown deletes the registry and deletes all the clusters
 teardown: registry-delete uninstall
 
-.PHONY: image setup registry registry-delete setup install uninstall teardown
+.PHONY: image setup registry registry-delete setup install uninstall teardown get-bootstrap-token
