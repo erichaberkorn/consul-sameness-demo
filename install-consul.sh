@@ -3,6 +3,7 @@
 set -e
 
 eval $(cat .env)
+eval $(cat k8sImages.env)
 
 export CHART_PATH=$1
 
@@ -30,7 +31,7 @@ for cluster_context in "${CLUSTER_CONTEXTS[@]}"; do
 done
 
 export HELM_RELEASE_NAME=cluster-01
-helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc1 --kube-context $CLUSTER1_CONTEXT
+helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc1 --set global.image="$CONSUL_IMAGE" --set global.imageK8S="$CONSUL_K8S_IMAGE" --kube-context $CLUSTER1_CONTEXT
 
 export C1_CA_CERT=""
 while [ -z "$C1_CA_CERT" ]; do
@@ -68,10 +69,10 @@ echo "$C1_CA_CERT" | kubectl --context $CLUSTER2_CONTEXT apply --namespace "$CON
 echo "$C1_CA_KEY" | kubectl --context $CLUSTER2_CONTEXT apply --namespace "$CONSUL_NS" -f -
 
 export HELM_RELEASE_NAME=cluster-01-ap1
-helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ap1.yaml --set global.datacenter=dc1 --set "externalServers.hosts[0]=$HOST" --set "externalServers.k8sAuthMethodHost=$AUTH_METHOD_URL" --kube-context $CLUSTER2_CONTEXT
+helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ap1.yaml --set global.datacenter=dc1 --set global.image="$CONSUL_IMAGE" --set global.imageK8S="$CONSUL_K8S_IMAGE" --set "externalServers.hosts[0]=$HOST" --set "externalServers.k8sAuthMethodHost=$AUTH_METHOD_URL" --kube-context $CLUSTER2_CONTEXT
 
 export HELM_RELEASE_NAME=cluster-02
-helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc2 --kube-context $CLUSTER3_CONTEXT
+helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc2 --set global.image="$CONSUL_IMAGE" --set global.imageK8S="$CONSUL_K8S_IMAGE" --kube-context $CLUSTER3_CONTEXT
 
 export HELM_RELEASE_NAME=cluster-03
-helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc3 --kube-context $CLUSTER4_CONTEXT
+helm install ${HELM_RELEASE_NAME} $CHART_PATH --create-namespace --namespace "$CONSUL_NS" --version "1.1.1" --values values-ent.yaml --set global.datacenter=dc3 --set global.image="$CONSUL_IMAGE" --set global.imageK8S="$CONSUL_K8S_IMAGE" --kube-context $CLUSTER4_CONTEXT

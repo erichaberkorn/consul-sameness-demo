@@ -26,8 +26,10 @@ CONSUL_K8S_SHA=$(docker inspect --format='{{index .RepoDigests 0}}' "$registryPa
 echo "Consul_SHA: $CONSUL_SHA"
 echo "CONSUL_K8S_SHA: $CONSUL_K8S_SHA"
 
-# Update the values.yaml file with the new sha's
-yq e -i ".global.image = \"$CONSUL_SHA\"" ../values-ap1.yaml
-yq e -i ".global.imageK8S = \"$CONSUL_K8S_SHA\""  ../values-ap1.yaml
-yq e -i ".global.image = \"$CONSUL_SHA\"" ../values-ent.yaml
-yq e -i ".global.imageK8S = \"$CONSUL_K8S_SHA\""  ../values-ent.yaml
+
+# Create and add CONSUL and CONSUL K8s image SHA's to an environment variable file for
+# loading with helm
+env_file="../k8sImages.env"
+touch "$env_file"
+echo "export CONSUL_IMAGE=${CONSUL_SHA}" >> "$env_file"
+echo "export CONSUL_K8S_IMAGE=${CONSUL_K8S_SHA}" >> "$env_file"

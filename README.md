@@ -8,12 +8,13 @@
 
 1. Make sure all variables are set correct in the `makefile`
 2. Install K3d
-3. `make setup` - This creates the k3d registry, builds/pushes the Consul/Consul-K8s images and sets up the value-*.yaml files
+3. `make setup` - This creates the k3d registry, builds/pushes the Consul/Consul-K8s images and sets the images in an environment file `k8sImages.env`
 4. `make install`
    - Deletes and creates four k3d Kubernetes clusters.
    - Installs Consul on each of the four Kubernetes created in the previous step.
    - Runs the static-client and static-server services on each Kubernetes cluster. static-server returns the peer name for the given partition.
    - Synchronizes configuration entries to each member of the sameness group.
+   - Note: The logs may contain errors when installing `Error from server (NotFound): secrets "cluster-02-a-peering-token" not found`. This is normal, and is just a timing issue with tokens being created and not existing yet.
 
 ## Common Issues
 1. If the image is having issues pushing to the K3d registry, make sure that registry is added to your host file `/etc/host`
