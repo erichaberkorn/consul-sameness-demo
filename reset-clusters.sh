@@ -7,13 +7,13 @@ k3d cluster delete c2
 k3d cluster delete c3
 k3d cluster delete c4
 sleep 1
-k3d cluster create c1 --registry-use k3d-registry.localhost:5001
+k3d cluster create c1 --registry-use k3d-registry.localhost:5000 --k3s-arg "--no-deploy=traefik@server:*"
 sleep 1
-k3d cluster create c2 --registry-use k3d-registry.localhost:5001
+k3d cluster create c2 --registry-use k3d-registry.localhost:5000 --k3s-arg "--no-deploy=traefik@server:*"
 sleep 1
-k3d cluster create c3 --registry-use k3d-registry.localhost:5001
+k3d cluster create c3 --registry-use k3d-registry.localhost:5000 --k3s-arg "--no-deploy=traefik@server:*"
 sleep 1
-k3d cluster create c4 --registry-use k3d-registry.localhost:5001
+k3d cluster create c4 --registry-use k3d-registry.localhost:5000 --k3s-arg "--no-deploy=traefik@server:*"
 
 docker network connect k3d-c1 k3d-c2-server-0
 docker network connect k3d-c2 k3d-c1-server-0

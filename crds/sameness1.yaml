@@ -3,11 +3,9 @@ kind: SamenessGroup
 metadata:
   name: mine
 spec:
+  defaultForFailover: true
   members:
-    # This is lazy but it tests that sameness groups ignore missing members.
     - partition: default
     - partition: ap1
-    - peer: cluster-01-a
-    - peer: cluster-01-b
     - peer: cluster-02-a
     - peer: cluster-03-a

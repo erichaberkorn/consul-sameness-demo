@@ -1,7 +1,8 @@
 global:
   name: consul
-  image: k3d-registry.localhost:5001/consul-dev
-  imageK8S: k3d-registry.localhost:5001/consul-control-plane-dev
+  image: k3d-registry.localhost:5000/consul-dev
+  imageK8S: k3d-registry.localhost:5000/consul-k8s
+  #imageK8S: k3d-registry.localhost:5000/consul-control-plane-dev
   peering:
     enabled: true
   tls:
@@ -30,10 +31,10 @@ meshGateway:
     type: "NodePort"
     nodePort: "30100"
 server:
-  extraConfig: |
-    {
-      "log_level": "TRACE"
-    }
+  #extraConfig: |
+  #  {
+  #    "log_level": "TRACE"
+  #  }
   resources:
     requests:
       memory: '100Mi'

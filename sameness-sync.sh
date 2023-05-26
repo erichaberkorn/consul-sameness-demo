@@ -12,13 +12,17 @@ tmp_cfg=$(mktemp)
 
 for cluster_context in "${CLUSTER_CONTEXTS[@]}"; do
   envsubst < "./crds/static-server-service-defaults.yaml" | kubectl --context $cluster_context apply -f -
-  envsubst < "./crds/sameness.yaml" | kubectl --context $cluster_context apply -f -
   if [ "$cluster_context" != "$CLUSTER2_CONTEXT" ]; then
     envsubst < "./crds/mesh.yaml" | kubectl --context $cluster_context apply -f -
   fi
 done
 
-for file in $(find ./crds -type f ! -name "static-server-service-defaults.yaml" ! -name "sameness.yaml" ! -name "mesh.yaml"); do
+envsubst < "./crds/sameness1.yaml" | kubectl --context $CLUSTER1_CONTEXT apply -f -
+envsubst < "./crds/sameness2.yaml" | kubectl --context $CLUSTER2_CONTEXT apply -f -
+envsubst < "./crds/sameness3.yaml" | kubectl --context $CLUSTER3_CONTEXT apply -f -
+envsubst < "./crds/sameness4.yaml" | kubectl --context $CLUSTER4_CONTEXT apply -f -
+
+for file in $(find ./crds -type f ! -name "static-server-service-defaults.yaml" ! -name "sameness*.yaml" ! -name "mesh.yaml"); do
   for cluster_context in "${CLUSTER_CONTEXTS[@]}"; do
     export PARTITION=default
     if [ "$cluster_context" == "$CLUSTER2_CONTEXT" ]; then
