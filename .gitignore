@@ -1,2 +1,3 @@
 manifests/c*
 license.txt
+k8sImages.env

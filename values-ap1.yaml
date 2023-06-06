@@ -1,7 +1,7 @@
 global:
   name: consul
-  image: k3d-registry.localhost:5001/consul-dev
-  imageK8S: k3d-registry.localhost:5001/consul-control-plane-dev
+  image: "k3d-registry.localhost:5002/consul-dev@sha256:27708036dc0496562b1f9af487f418a5685dc63540eca34f25843b6f7ae69512"
+  imageK8S: "k3d-registry.localhost:5002/consul-k8s-control-plane-dev@sha256:0dfce57eee7006709c2e689a39694474b1bb0cfee9a9c9f84aa8b6f2ef9fb029"
   peering:
     enabled: true
   tls:
@@ -37,7 +37,7 @@ connectInject:
     mirroringK8S: true
 meshGateway:
   enabled: true
-# Everything below is for k3d
+  # Everything below is for k3d
   service:
     type: "NodePort"
     nodePort: "30101"

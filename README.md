@@ -6,10 +6,22 @@
 
 ## Setup Steps
 
-1. `./reset-clusters.sh` - This deletes and creates four `k3d` Kubernetes clusters.
-2. `./install-consul.sh` - This installs Consul on each of the four Kubernetes created in the previous step.
-3. `./configure_k8s.sh` - Runs the `static-client` and `static-server` services on each Kubernetes cluster. `static-server` returns the peer name for the given partition.
-4. `./sameness-sync.sh` - Syncronizes configuration entires to each member of the sameness group.
+1. Make sure all variables are set correct in the `makefile`
+2. Install K3d
+3. `make setup` - This creates the k3d registry, builds/pushes the Consul/Consul-K8s images and sets the images in an environment file `k8sImages.env`
+4. `make install`
+   - Deletes and creates four k3d Kubernetes clusters.
+   - Installs Consul on each of the four Kubernetes created in the previous step.
+   - Runs the static-client and static-server services on each Kubernetes cluster. static-server returns the peer name for the given partition.
+   - Synchronizes configuration entries to each member of the sameness group.
+   - Note: The logs may contain errors when installing `Error from server (NotFound): secrets "cluster-02-a-peering-token" not found`. This is normal, and is just a timing issue with tokens being created and not existing yet.
+
+## Common Issues
+1. If the image is having issues pushing to the K3d registry, make sure that registry is added to your host file `/etc/host`
+   example content. 
+   ```shell
+   127.0.0.1 k3d-registry.localhost
+   ```
 
 ## Testing
 
@@ -21,6 +33,6 @@ Run the following commands to verify this:
 2. `./scale.sh 1 0` to trigger a failover.
 3. `./make_request.sh` - Returns `cluster-01-b`
 4. `./scale.sh 2 0` to trigger a failover.
-3. `./make_request.sh` - Returns `cluster-03`
-4. `./scale.sh 4 0` to trigger a failover.
-3. `./make_request.sh` - Returns `cluster-02`
+5. `./make_request.sh` - Returns `cluster-03`
+6. `./scale.sh 4 0` to trigger a failover.
+7. `./make_request.sh` - Returns `cluster-02`
